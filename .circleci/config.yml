@@ -49,6 +49,7 @@ jobs:
       
   
   test:
+    machine: true
     steps:
       - checkout
       - attach_workspace:
@@ -66,6 +67,7 @@ jobs:
             sfdx force:org:delete -u circle_build_$CIRCLE_BUILD_NUM -p
 
   deploy_partial:
+    machine: true
     steps:
       - checkout
       - attach_workspace:
