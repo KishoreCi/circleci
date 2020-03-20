@@ -48,8 +48,7 @@ jobs:
             #sfdx force:source:push -u circle_build_$CIRCLE_BUILD_NUM
       
   
-  tests:
-    machine: true
+  test:
     steps:
       - checkout
       - attach_workspace:
@@ -67,7 +66,6 @@ jobs:
             sfdx force:org:delete -u circle_build_$CIRCLE_BUILD_NUM -p
 
   deploy_partial:
-    machine: true
     steps:
       - checkout
       - attach_workspace:
@@ -111,9 +109,10 @@ jobs:
     
     workflows:
       version: 2
+      build_and_deploy:
         jobs:
           - build
-          - tests
+          - test
           - deploy_partial:
               requires:
                 - build
