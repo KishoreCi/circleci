@@ -108,23 +108,23 @@ jobs:
           command: sfdx force:mdapi:deploy -d testDeploy/ -u deploy -w 2
       
     
-    workflows:
-      version: 2
-      build_and_deploy:
-        jobs:
-          - build
-          - test:
-              requires:
-                - build
-          - deploy_partial:
-              requires:
-                - build
-              filters:
-                branches:
-                  only: Scratch1
-          - deployProd:
-              requires:
-                - build
-              filters:
-                branches:
-                  only: master
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy_partial:
+          requires:
+            - build
+          filters:
+            branches:
+              only: Scratch1
+      - deployProd:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
