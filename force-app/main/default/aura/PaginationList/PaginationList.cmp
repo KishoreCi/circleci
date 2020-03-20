@@ -1,0 +1,50 @@
+<aura:component extensible="true" controller="PaginationList" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="recordList" type="List"/>
+    
+    <aura:attribute name="paginationList" type="List"/>
+    <aura:attribute name="pageSize" type="Integer" default="10"/>
+    <aura:attribute name="noOfPages" type="Integer"/>
+    <aura:attribute name="pageNumber" type="Integer"/>
+    <aura:attribute name="totalSize" type="Integer"/>
+    <aura:attribute name="paginationMap" type="Map"/>
+    
+    
+    <div>
+        <lightning:card title="Pagination">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="contact Name">Contact Name</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.paginationList}" var="record">
+                        <tr class="slds-hint-parent">
+                            <td data-label="Name">
+                                <div class="slds-truncate" title="Name">{!record.Name}</div>
+                            </td>
+                        </tr>
+                    </aura:iteration>
+                </tbody>
+            </table>
+            <div class="slds-align_absolute-center" style="height:4rem">
+                Page: {!v.pageNumber} 
+                <br></br>
+                <span style="padding-left:4rem" onkeypress="{!c.onEnter}">
+                    <ui:inputNumber aura:id="search" label="" value=""/>
+                </span>
+            </div>
+            <div style="margin-right:1px">
+                <lightning:buttonGroup >
+                    <lightning:button label="Previous" onclick="{!c.onPrev}" disabled="{!(v.pageNumber > 1 ? false:true)}"/>
+                    <lightning:button label="Next" onclick="{!c.onNext}" disabled="{!(v.pageNumber == v.noOfPages ? true:false)}"/>
+                </lightning:buttonGroup>
+            </div>
+        </lightning:card>
+    </div>
+    <div>{!v.body}</div>
+</aura:component>
