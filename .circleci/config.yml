@@ -43,9 +43,9 @@ jobs:
           command: |
             echo 'Running tests'
             sfdx force:auth:jwt:grant --clientid $HUB_CONSUMER_KEY --jwtkeyfile assets/server.key --username $HUB_SFDX_USER --setdefaultdevhubusername -a hub
-            sfdx force --help
-            sfdx force:org:create -s -f ~/ci_app/config/project-scratch-def.json -a circle_build_$CIRCLE_BUILD_NUM --wait 4
-            sfdx force:source:push -u circle_build_$CIRCLE_BUILD_NUM
+            #sfdx force --help
+            #sfdx force:org:create -s -f ~/ci_app/config/project-scratch-def.json -a circle_build_$CIRCLE_BUILD_NUM --wait 4
+            #sfdx force:source:push -u circle_build_$CIRCLE_BUILD_NUM
       
   
   tests:
@@ -65,6 +65,27 @@ jobs:
           name: Delete Useless Scratch Org
           command: |
             sfdx force:org:delete -u circle_build_$CIRCLE_BUILD_NUM -p
+
+  deploy_partial:
+    machine: true
+    steps:
+      - checkout
+      - attach_workspace:
+                      at: ~/
+      - run:
+          name: Create deploy key
+          command: |
+            ### Uncomment the following if performing deployments
+            echo 'make deploy key'
+            #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
+            openssl rsa -in keys/deploy.key -check -noout
+            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile keys/deploy.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
+      - run:
+          name: Convert SFDX source to Metadata Bundle
+          command: sfdx force:source:convert -r force-app -d testDeploy
+      - run:
+          name: Deploy Metadata Bundle to target org
+          command: sfdx force:mdapi:deploy -d testDeploy/ -u deploy -w 2
           
   deploy:
     machine: true
@@ -79,7 +100,7 @@ jobs:
             echo 'make deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
             openssl rsa -in keys/deploy.key -check -noout
-            sfdx force:auth:jwt:grant --clientid $DEPLOY_CONSUMER_KEY --jwtkeyfile keys/deploy.key --username $DEPLOY_SFDC_USER -a deploy
+            sfdx force:auth:jwt:grant --clientid $PROD_DEPLOY_CONSUMER_KEY --jwtkeyfile keys/deploy.key --username $PROD_DEPLOY_SFDC_USER -a deploy
       - run:
           name: Convert SFDX source to Metadata Bundle
           command: sfdx force:source:convert -r force-app -d testDeploy
@@ -93,4 +114,17 @@ jobs:
       build_and_deploy:
         jobs:
           - build:
-          
+          - deploy_partial:
+              requires:
+                - tests
+                - build
+              filters:
+                branches:
+                  only: Scratch1
+          - deploy:
+              requires:
+                - tests
+                - build
+              filters:
+                branches:
+                  only: master
