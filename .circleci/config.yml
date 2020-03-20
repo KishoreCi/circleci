@@ -69,10 +69,10 @@ jobs:
           branch: ["Scratch1"]
           command: |
             ### Uncomment the following if performing deployments
-            echo 'make deploy key'
+            echo 'make partial deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
-            openssl rsa -in keys/deploy.key -check -noout
-            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile keys/deploy.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
+            #openssl rsa -in keys/deploy.key -check -noout
+            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
       - run:
           name: Convert SFDX source to Metadata Bundle
           branch: ["Scratch1"]
@@ -88,10 +88,10 @@ jobs:
           branch: ["master"]
           command: |
             ### Uncomment the following if performing deployments
-            echo 'make deploy key'
+            echo 'make prod deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
-            openssl rsa -in keys/deploy.key -check -noout
-            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile keys/deploy.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
+            #openssl rsa -in keys/deploy.key -check -noout
+            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
       - run:
           name: Convert SFDX source to Metadata Bundle
           branch: ["master"]
