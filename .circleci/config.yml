@@ -76,8 +76,8 @@ jobs:
             ### Uncomment the following if performing deployments
             echo 'make partial deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
-            openssl rsa -in keys/deploy.key -check -noout
-            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile keys/deploy.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
+            #openssl rsa -in keys/deploy.key -check -noout
+            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy --instanceurl https://test.salesforce.com
       - run:
           name: Convert SFDX source to Metadata Bundle
           command: sfdx force:source:convert -r force-app -d testDeploy
@@ -98,8 +98,8 @@ jobs:
             ### Uncomment the following if performing deployments
             echo 'make prod deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
-            openssl rsa -in keys/deploy.key -check -noout
-            sfdx force:auth:jwt:grant --clientid $PROD_DEPLOY_CONSUMER_KEY --jwtkeyfile keys/deploy.key --username $PROD_DEPLOY_SFDC_USER -a deploy
+            #openssl rsa -in keys/deploy.key -check -noout
+            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
       - run:
           name: Convert SFDX source to Metadata Bundle
           command: sfdx force:source:convert -r force-app -d testDeploy
@@ -125,6 +125,7 @@ workflows:
       - deployProd:
           requires:
             - build
+            - test
           filters:
             branches:
               only: master
