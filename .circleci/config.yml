@@ -138,14 +138,12 @@ workflows:
             - build
       - deploy_partial:
           requires:
-            - build
             - test
           filters:
             branches:
               only: Scratch1
       - deployProd:
           requires:
-            - build
             - test
           filters:
             branches:
