@@ -53,7 +53,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-                      at: ~/
+                      at: ~/sfdx
       - run:
           name: Run Apex Tests
           command: |
@@ -71,7 +71,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-                      at: ~/
+                      at: ~/sfdx
       - run:
           name: Create partial deploy key
           command: |
@@ -92,7 +92,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-                      at: ~/
+                      at: ~/sfdx
       - run:
           name: Create prod deploy key
           command: |
