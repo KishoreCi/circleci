@@ -93,10 +93,4 @@ jobs:
       build_and_deploy:
         jobs:
           - build:
-          - deploy:
-              requires:
-                - tests
-                - build
-              filters:
-                branches:
-                  only: master
+          
