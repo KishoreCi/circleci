@@ -8,6 +8,14 @@
         <apexClass>AccountsClass</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>PaginationList</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>PaginationListTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <custom>false</custom>
     <fieldPermissions>
         <editable>false</editable>
@@ -34,5 +42,4 @@
         <object>TestCi__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
-    <userLicense>Salesforce</userLicense>
 </Profile>
