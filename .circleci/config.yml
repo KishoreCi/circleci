@@ -66,7 +66,7 @@ jobs:
       - run:
           name: Run Apex Tests
           command: |
-            mkdir -p ~/junit
+            mkdir ~/junit
             sfdx force:apex:test:run -c -d ~/junit -r junit --wait 5
       - store_test_results:
           path: ~/junit
@@ -92,6 +92,7 @@ jobs:
             echo 'make partial deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
             #openssl rsa -in keys/deploy.key -check -noout
+            openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
             sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy --instanceurl https://test.salesforce.com
       - run:
           name: Convert SFDX source to Metadata Bundle
@@ -117,6 +118,7 @@ jobs:
             echo 'make prod deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
             #openssl rsa -in keys/deploy.key -check -noout
+            openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
             sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
       - run:
           name: Convert SFDX source to Metadata Bundle
