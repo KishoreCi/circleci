@@ -75,11 +75,9 @@ jobs:
           sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy --instanceurl https://test.salesforce.com
     - run:
         name: Convert SFDX source to Metadata Bundle
-        branch: ["Scratch1"]
         command: sfdx force:source:convert -r force-app -d testDeploy
     - run:
         name: Deploy Metadata Bundle to target org
-        branch: ["Scratch1"]
         command: sfdx force:mdapi:deploy -d testDeploy/ -u deploy -w 2
   
   buildProd:
