@@ -36,11 +36,8 @@ jobs:
             #- echo $HUB_SERVER_KEY_HEX | xxd -r -ps >> keys/hub.key
             openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
             #- openssl rsa -in keys/hub.key -check -noout
-          ### Uncomment the following if performing deployments
-          #- echo 'make deploy key'
-          #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
-          #- openssl rsa -in keys/deploy.key -check -noout
-          #- sfdx force:auth:jwt:grant --clientid $DEPLOY_CONSUMER_KEY --jwtkeyfile keys/deploy.key --username $DEPLOY_SFDC_USER -a deploy
+
+
       - run:
           name: Setup Org
           command: |
@@ -49,21 +46,57 @@ jobs:
             #sfdx force --help
             #sfdx force:org:create -s -f ~/ci_app/config/project-scratch-def.json -a circle_build_$CIRCLE_BUILD_NUM --wait 4
             #sfdx force:source:push -u circle_build_$CIRCLE_BUILD_NUM
-      #- run:
-          #name: Run Apex Tests
-          #command: |
-           # mkdir -p ~/junit
-            #sfdx force:apex:test:run -c -d ~/junit -r junit --wait 5
-     # - store_test_results:
-      #    path: ~/junit
-      #- run:
-       #   name: Delete Useless Scratch Org
-        #  command: |
-         #   sfdx force:org:delete -u circle_build_$CIRCLE_BUILD_NUM -p
-
-### Uncomment the following if performing deployments
-#deployment:
-#  override:
-#    - sfdx force:source:convert -r force-app -d testDeploy
-#    - . cleanupDeploy.sh
-#    - sfdx force:mdapi:deploy -d testDeploy/ -u deploy -w 2
+      
+  
+  tests:
+    machine: true
+    steps:
+      - checkout
+      - attach_workspace:
+                      at: ~/
+      - run:
+          name: Run Apex Tests
+          command: |
+            mkdir -p ~/junit
+            sfdx force:apex:test:run -c -d ~/junit -r junit --wait 5
+      - store_test_results:
+          path: ~/junit
+      - run:
+          name: Delete Useless Scratch Org
+          command: |
+            sfdx force:org:delete -u circle_build_$CIRCLE_BUILD_NUM -p
+          
+  deploy:
+    machine: true
+    steps:
+      - checkout
+      - attach_workspace:
+                      at: ~/
+      - run:
+          name: Create deploy key
+          command: |
+            ### Uncomment the following if performing deployments
+            echo 'make deploy key'
+            #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
+            openssl rsa -in keys/deploy.key -check -noout
+            sfdx force:auth:jwt:grant --clientid $DEPLOY_CONSUMER_KEY --jwtkeyfile keys/deploy.key --username $DEPLOY_SFDC_USER -a deploy
+      - run:
+          name: Convert SFDX source to Metadata Bundle
+          command: sfdx force:source:convert -r force-app -d testDeploy
+      - run:
+          name: Deploy Metadata Bundle to target org
+          command: sfdx force:mdapi:deploy -d testDeploy/ -u deploy -w 2
+      
+    
+    workflows:
+      version: 2
+      build_and_deploy:
+        jobs:
+          - build:
+          - deploy:
+              requires:
+                - tests
+                - build
+              filters:
+                branches:
+                  only: master
