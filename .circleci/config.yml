@@ -100,7 +100,7 @@ jobs:
           name: Deploy Metadata Bundle to target org
           branch: ["master"]
           command: sfdx force:mdapi:deploy -d testDeploy/ -u deploy -w 2
-          
+
     #Uncomment when you can run multiple jobs in circle ci, only possible in paid version.
     #workflows:
      # version: 2
