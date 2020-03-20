@@ -20,12 +20,13 @@ jobs:
       - run:
           name: Download CLI
           command: |
+            cd ~/
             mkdir sfdx
             wget -qO- $DX_CLI_URL | tar xJ -C sfdx --strip-components 1
       - run:
           name: Install CLI
           command: |
-            ./sfdx/install
+            ~/sfdx/install
             sfdx
             mkdir tmp
       - run:
@@ -37,87 +38,114 @@ jobs:
             openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
             #- openssl rsa -in keys/hub.key -check -noout
 
-
+      - persist_to_workspace:
+            root: ~/
+            paths:
+                - .sfdx/*
+                - sfdx/*
+  
+  test:
+    machine: true
+    steps:
+      - checkout
+      - attach_workspace:
+                at: ~/
       - run:
-          name: Setup Org
+          name: Update PATH and Define Environment Variable at Runtime
+          command: |
+            echo 'export PATH=/home/circleci/sfdx/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Create a fresh scratch Org
           command: |
             echo 'Running tests'
+            openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
             sfdx force:auth:jwt:grant --clientid $HUB_CONSUMER_KEY --jwtkeyfile assets/server.key --username $HUB_SFDX_USER --setdefaultdevhubusername -a hub
             sfdx force --help
-            sfdx force:org:create -s -f ~/ci_app/config/project-scratch-def.json -a circle_build_$CIRCLE_BUILD_NUM --wait 4
+            sfdx force:org:create -s -f /home/circleci/project/config/project-scratch-def.json -a circle_build_$CIRCLE_BUILD_NUM --wait 4
             sfdx force:source:push -u circle_build_$CIRCLE_BUILD_NUM
-      
       - run:
           name: Run Apex Tests
-          branch: ["master"]
           command: |
-            mkdir -p ~/junit
+            mkdir ~/junit
             sfdx force:apex:test:run -c -d ~/junit -r junit --wait 5
       - store_test_results:
-          branch: ["master"]
           path: ~/junit
-          
       - run:
           name: Delete Useless Scratch Org
-          branch: ["master"]
           command: |
             sfdx force:org:delete -u circle_build_$CIRCLE_BUILD_NUM -p
-            
-      #Deploy to Partial
+
+  deploy_partial:
+    machine: true
+    steps:
+      - checkout
+      - attach_workspace:
+                at: ~/
       - run:
-          name: Create deploy key
-          branch: ["Scratch1"]
+          name: Update PATH and Define Environment Variable at Runtime
+          command: |
+            echo 'export PATH=/home/circleci/sfdx/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Create partial deploy key
           command: |
             ### Uncomment the following if performing deployments
             echo 'make partial deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
             #openssl rsa -in keys/deploy.key -check -noout
+            openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
             sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy --instanceurl https://test.salesforce.com
       - run:
           name: Convert SFDX source to Metadata Bundle
-          branch: ["Scratch1"]
           command: sfdx force:source:convert -r force-app -d testDeploy
       - run:
           name: Deploy Metadata Bundle to target org
-          branch: ["Scratch1"]
           command: sfdx force:mdapi:deploy -d testDeploy/ -u deploy -w 2
-            
-      #Deploy to Prod
+          
+  deployProd:
+    machine: true
+    steps:
+      - checkout
+      - attach_workspace:
+                      at: ~/
       - run:
-          name: Create deploy key
-          branch: ["master"]
+          name: Update PATH and Define Environment Variable at Runtime
+          command: |
+            echo 'export PATH=/home/circleci/sfdx/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Create prod deploy key
           command: |
             ### Uncomment the following if performing deployments
             echo 'make prod deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
             #openssl rsa -in keys/deploy.key -check -noout
+            openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
             sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
       - run:
           name: Convert SFDX source to Metadata Bundle
-          branch: ["master"]
           command: sfdx force:source:convert -r force-app -d testDeploy
       - run:
           name: Deploy Metadata Bundle to target org
-          branch: ["master"]
           command: sfdx force:mdapi:deploy -d testDeploy/ -u deploy -w 2
-
-    #Uncomment when you can run multiple jobs in circle ci, only possible in paid version.
-    #workflows:
-     # version: 2
-      #build_and_deploy:
-       # jobs:
-        #  - build
-         # - deploy_partial:
-          #    requires:
-           #     - tests
-            #    - build
-             # filters:
-              #  branches:
-               #   only: Scratch1
-          #- deploy:
-           #   requires:
-            #    - tests
-             #   - build
-              #filters:
-               # branches:
-                #  only: master
+      
+    
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy_partial:
+          requires:
+            - build
+          filters:
+            branches:
+              only: Scratch1
+      - deployProd:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: master
