@@ -50,9 +50,10 @@ jobs:
   
   test:
     machine: true
-    working_directory: ~/ci_app
     steps:
       - checkout
+      - attach_workspace:
+                      at: ~/
       - run:
           name: Run Apex Tests
           command: |
@@ -67,9 +68,10 @@ jobs:
 
   deploy_partial:
     machine: true
-    working_directory: ~/ci_app
     steps:
       - checkout
+      - attach_workspace:
+                      at: ~/
       - run:
           name: Create partial deploy key
           command: |
@@ -87,7 +89,6 @@ jobs:
           
   deployProd:
     machine: true
-    working_directory: ~/ci_app
     steps:
       - checkout
       - attach_workspace:
