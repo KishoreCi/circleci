@@ -151,16 +151,10 @@ build-Prod:
     build_and_deploy:
        jobs:
         - build-partial:
-            requires:
-              - tests
-               - build
             filters:
                branches:
                 only: Scratch1
         - build-Prod:
-            requires:
-              - tests
-               - build
             filters:
                branches:
                 only: master
