@@ -1,5 +1,8 @@
+@isTest
 public with sharing class AccountClassTest {
-    public AccountClassTest() {
-        AccountClass.getAccounts();
+    @isTest
+    public static void AccountClassTestMethod() {
+        AccountsClass.getAccounts();
+        //testtt
     }
 }
