@@ -28,6 +28,11 @@ jobs:
             ./sfdx/install
             sfdx
             mkdir tmp
+      - persist_to_workspace:
+            root: ~/
+            paths:
+                - tools/*
+                - .sfdx/*
       - run:
           name: Create hub key
           command: |
@@ -53,7 +58,10 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-                      at: ~/sfdx
+          at: ~/
+      - run: 
+          name: DX Install
+          command: ~/tools/sfdx/install
       - run:
           name: Run Apex Tests
           command: |
@@ -71,7 +79,10 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-                      at: ~/sfdx
+          at: ~/
+      - run: 
+          name: DX Install
+          command: ~/tools/sfdx/install
       - run:
           name: Create partial deploy key
           command: |
@@ -92,7 +103,10 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-                      at: ~/sfdx
+          at: ~/
+      - run: 
+          name: DX Install
+          command: ~/tools/sfdx/install
       - run:
           name: Create prod deploy key
           command: |
