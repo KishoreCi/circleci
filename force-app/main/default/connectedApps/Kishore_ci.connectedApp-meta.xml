@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>bkishore231@gmail.com</contactEmail>
+    <description>Circleci for CI/CD</description>
+    <iconUrl>https://login.salesforce.com/logos/Salesforce/SalesforcePlatform/icon.png</iconUrl>
+    <label>Kishore-ci</label>
+    <logoUrl>https://login.salesforce.com/logos/Salesforce/SalesforcePlatform/logo.png</logoUrl>
+    <oauthConfig>
+        <callbackUrl>http://localhost:1717/OauthRedirect</callbackUrl>
+        <certificate>MIIDuTCCAqECFB0HHzQYh/H/apN33XVEl9SrtsO9MA0GCSqGSIb3DQEBCwUAMIGYMQswCQYDVQQGEwJJTjESMBAGA1UECAwJVGVsYW5nYW5hMRIwEAYDVQQHDAlIeWRlcmFiYWQxFzAVBgNVBAoMDlNhbGVzZm9yY2UgTFdDMRAwDgYDVQQLDAdTZWN0aW9uMRAwDgYDVQQDDAdLaXNob3JlMSQwIgYJKoZIhvcNAQkBFhVia2lzaG9yZTIzMUBnbWFpbC5jb20wHhcNMjAwMzE2MTAwODA4WhcNMjEwMzE2MTAwODA4WjCBmDELMAkGA1UEBhMCSU4xEjAQBgNVBAgMCVRlbGFuZ2FuYTESMBAGA1UEBwwJSHlkZXJhYmFkMRcwFQYDVQQKDA5TYWxlc2ZvcmNlIExXQzEQMA4GA1UECwwHU2VjdGlvbjEQMA4GA1UEAwwHS2lzaG9yZTEkMCIGCSqGSIb3DQEJARYVYmtpc2hvcmUyMzFAZ21haWwuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt6333TvdlQbFA9spqFZr+ZNckzqDuvscFusaPb3QSr1rO42PS8i5s0QKF1YQh9ICERIkHUGMstcrUaqXRALG6QXBTGj9OyEp950rgZ0myBcFT+myT1jYIY1/ND4Lxp6Xl56qSGUCsVxWywm2VS8sftP9frVADWgJE9PL6FYiQnirMKDy4HSFRv//yUgC2WWwHXob/nKDfN2+MrIp5+2mXKAEFz5Nn7YzTCvFSCrTZh6XCNRAOXqTW06ssp1uWGvo7tCODRG2LEm4PtS2Be0i3ni8vkrZ+Fvn3VB0GsyuOxYNmBh9+tikhcBj4GszXz8ssCNqkfQ7L356i3lA3pIVtwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAB8mMHqV7KJwnj1h/e/zfUUEdcrouFSnPQovwpSV6JnxrUsAHb3zpCbDo3IOJSGDdERAW4tpB/XMLAd9vbbh3qyxAE2RjqhD7PQB+kftICE4V1a0TN5hBTXBFk/DjbzLvzc0P7UQ11uJdX3+vor3hHzkoezzGScFtEta9BFDgC2JyFqJZWXY/NoItHhn3+k0/G904DB+g91c0x/3h/ULOUkXu3+lK/U3I3k2ziCY1kG5H7fQRI22n7afBu+2TeuzG43LJz7l48z929UGc4jaTaSxO8PHPVvwWmtYvsVAHiW/fjLQ3/Su3GEiee7hB6IxoJmy5IbzqC9cxNylWTGPXs</certificate>
+        <consumerKey>3MVG9N6eDmZRVJOkN4SrbFBgQgmXDy_VNfmKmn7SZ2psucwlb72Y80xvEbHm0OdkSCq.nU9ETuSvNyLkZo4Rc</consumerKey>
+        <isAdminApproved>true</isAdminApproved>
+        <scopes>Api</scopes>
+        <scopes>Web</scopes>
+        <scopes>RefreshToken</scopes>
+    </oauthConfig>
+    <profileName>System Administrator</profileName>
+</ConnectedApp>
