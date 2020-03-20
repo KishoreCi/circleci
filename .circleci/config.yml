@@ -104,7 +104,7 @@ jobs:
       - checkout
       - attach_workspace:
                       at: ~/
-       - run:
+      - run:
           name: Update PATH and Define Environment Variable at Runtime
           command: |
             echo 'export PATH=/home/circleci/sfdx/bin:$PATH' >> $BASH_ENV
