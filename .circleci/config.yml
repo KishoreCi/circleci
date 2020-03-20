@@ -72,7 +72,7 @@ jobs:
             echo 'make partial deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
             #openssl rsa -in keys/deploy.key -check -noout
-            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
+            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy --instanceurl https://test.salesforce.com
       - run:
           name: Convert SFDX source to Metadata Bundle
           branch: ["Scratch1"]
