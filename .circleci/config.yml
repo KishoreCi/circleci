@@ -8,7 +8,7 @@ general:
 #       - /dev-.*/ # or regexes
 
 jobs:
-  kishore:
+  build:
     machine: true
     working_directory: ~/ci_app
     environment:
@@ -111,19 +111,19 @@ jobs:
     
     workflows:
       version: 2
-      build:
+      build_and_deploy:
         jobs:
-          - kishore
+          - build
           - test
           - deploy_partial:
               requires:
-                - kishore
+                - build
               filters:
                 branches:
                   only: Scratch1
           - deployProd:
               requires:
-                - kishore
+                - build
               filters:
                 branches:
                   only: master
