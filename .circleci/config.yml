@@ -50,6 +50,7 @@ jobs:
   
   test:
     machine: true
+    working_directory: ~/ci_app
     steps:
       - checkout
       - attach_workspace:
@@ -68,6 +69,7 @@ jobs:
 
   deploy_partial:
     machine: true
+    working_directory: ~/ci_app
     steps:
       - checkout
       - attach_workspace:
@@ -89,6 +91,7 @@ jobs:
           
   deployProd:
     machine: true
+    working_directory: ~/ci_app
     steps:
       - checkout
       - attach_workspace:
