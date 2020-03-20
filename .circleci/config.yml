@@ -65,7 +65,7 @@ jobs:
             
       #Deploy to Partial
       - run:
-          name: Create deploy key
+          name: Create Partial deploy key
           branch: ["Scratch1"]
           command: |
             ### Uncomment the following if performing deployments
@@ -84,14 +84,14 @@ jobs:
             
       #Deploy to Prod
       - run:
-          name: Create deploy key
+          name: Create Prod deploy key
           branch: ["master"]
           command: |
             ### Uncomment the following if performing deployments
             echo 'make prod deploy key'
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
             #openssl rsa -in keys/deploy.key -check -noout
-            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
+            sfdx force:auth:jwt:grant --clientid $PROD_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PROD_DEPLOY_SFDC_USER -a deploy
       - run:
           name: Convert SFDX source to Metadata Bundle
           branch: ["master"]
