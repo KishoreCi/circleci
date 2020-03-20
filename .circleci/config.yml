@@ -37,26 +37,30 @@ jobs:
             openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
             #- openssl rsa -in keys/hub.key -check -noout
 
-
-      - run:
-          name: Setup Org
-          command: |
-            echo 'Running tests'
-            sfdx force:auth:jwt:grant --clientid $HUB_CONSUMER_KEY --jwtkeyfile assets/server.key --username $HUB_SFDX_USER --setdefaultdevhubusername -a hub
-            #sfdx force --help
-            #sfdx force:org:create -s -f ~/ci_app/config/project-scratch-def.json -a circle_build_$CIRCLE_BUILD_NUM --wait 4
-            #sfdx force:source:push -u circle_build_$CIRCLE_BUILD_NUM
-      
+      - persist_to_workspace:
+            root: ~/
+            paths:
+                - .sfdx/*
+                - sfdx/*
   
   test:
     machine: true
     steps:
       - checkout
       - attach_workspace:
-          at: ~/
-      - run: 
-          name: DX Install
-          command: ./sfdx/install
+                at: ~/
+      - run:
+          name: Update PATH and Define Environment Variable at Runtime
+          command: |
+            echo 'export PATH=/home/circleci/sfdx/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Create a fresh scratch Org
+          command: |
+            echo 'Running tests'
+            sfdx force:auth:jwt:grant --clientid $HUB_CONSUMER_KEY --jwtkeyfile assets/server.key --username $HUB_SFDX_USER --setdefaultdevhubusername -a hub
+            sfdx force --help
+            sfdx force:org:create -s -f /config/project-scratch-def.json -a circle_build_$CIRCLE_BUILD_NUM --wait 4
+            sfdx force:source:push -u circle_build_$CIRCLE_BUILD_NUM
       - run:
           name: Run Apex Tests
           command: |
@@ -74,10 +78,11 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/
-      - run: 
-          name: DX Install
-          command: ./sfdx/install
+                at: ~/
+       - run:
+          name: Update PATH and Define Environment Variable at Runtime
+          command: |
+            echo 'export PATH=/home/circleci/sfdx/bin:$PATH' >> $BASH_ENV
       - run:
           name: Create partial deploy key
           command: |
@@ -98,10 +103,11 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/
-      - run: 
-          name: DX Install
-          command: ./sfdx/install
+                      at: ~/
+       - run:
+          name: Update PATH and Define Environment Variable at Runtime
+          command: |
+            echo 'export PATH=/home/circleci/sfdx/bin:$PATH' >> $BASH_ENV
       - run:
           name: Create prod deploy key
           command: |
