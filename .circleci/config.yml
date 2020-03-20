@@ -119,7 +119,7 @@ jobs:
             #- echo $DEPLOY_SERVER_KEY_HEX | xxd -r -ps >> keys/deploy.key
             #openssl rsa -in keys/deploy.key -check -noout
             openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
-            sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy
+            sfdx force:auth:jwt:grant --clientid $PROD_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PROD_DEPLOY_SFDC_USER -a deploy
       - run:
           name: Convert SFDX source to Metadata Bundle
           command: sfdx force:source:convert -r force-app -d testDeploy
@@ -139,6 +139,7 @@ workflows:
       - deploy_partial:
           requires:
             - build
+            - test
           filters:
             branches:
               only: Scratch1
