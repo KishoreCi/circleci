@@ -8,7 +8,7 @@ general:
 #       - /dev-.*/ # or regexes
 
 jobs:
-  build-partial:
+  buildpartial:
     filters:
       branches:
         only: 
@@ -82,7 +82,7 @@ jobs:
         branch: ["Scratch1"]
         command: sfdx force:mdapi:deploy -d testDeploy/ -u deploy -w 2
   
-  build-Prod:
+  buildProd:
     filters:
       branches:
         only: 
