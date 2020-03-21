@@ -95,11 +95,8 @@ jobs:
             openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
             sfdx force:auth:jwt:grant --clientid $PARTIAL_DEPLOY_CONSUMER_KEY --jwtkeyfile assets/server.key --username $PARTIAL_DEPLOY_SFDC_USER -a deploy --instanceurl https://test.salesforce.com
       - run:
-          name: Convert SFDX source to Metadata Bundle
-          command: sfdx force:source:convert -r force-app -d testDeploy
-      - run:
-          name: Deploy Metadata Bundle to target org
-          command: sfdx force:mdapi:deploy -d testDeploy/ -u deploy -w 2
+          name: Deploy Source to target org
+          command: sfdx force:source:deploy -p /home/circleci/project/force-app
           
   deployProd:
     machine: true
