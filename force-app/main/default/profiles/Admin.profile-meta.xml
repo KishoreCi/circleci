@@ -36,6 +36,9 @@
         <layout>Account-Account Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Circle_Ci_Test_Metadate_Types__mdt-Circle Ci Test Metadate Types Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>TestCi__c-TestCi Layout</layout>
     </layoutAssignments>
     <objectPermissions>
